@@ -67,6 +67,8 @@
     <watches-manager>
       <configuration name="PythonConfigurationType">
         <watch expression="self" language="Python" />
+        <watch expression="pt_now" language="Python" />
+        <watch expression="pControl" language="Python" />
       </configuration>
     </watches-manager>
   </component>
