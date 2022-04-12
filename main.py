@@ -27,6 +27,8 @@ class LabelBezierCurve(QMainWindow):
         self.saveFileName = None
         self.imgOriginalWidth = 0
         self.imgOriginalHeight = 0
+        self.allFiles = []
+        self.allFilesIndex = 0
 
         #self.ui.OpenFile.setEnabled(True)
         self.ui.OpenFile.clicked.connect(self.openfile)
@@ -34,6 +36,9 @@ class LabelBezierCurve(QMainWindow):
         self.ui.LabelDone.clicked.connect(self.LabelDone)
         self.ui.LabelReset.clicked.connect(self.LabelReset)
         self.ui.LabelSave.clicked.connect(self.LabelSave)
+        self.ui.OpenFolder.clicked.connect(self.OpenFolder)
+        self.ui.OpenNext.clicked.connect(self.LabelNext)
+        self.ui.LabelPrevious.clicked.connect(self.LabelPrevious)
 
         self.ui.LabelDone.setEnabled(False)
         self.ui.LabelReset.setEnabled(False)
@@ -121,29 +126,34 @@ class LabelBezierCurve(QMainWindow):
 
     def openfile(self):
         openfile_name,imgType = QFileDialog.getOpenFileName(self, 'Select File', '', 'Image Files(*.bmp , *.jpg)')
-
+        if openfile_name == None:
+            return 0
         # In cv2.imread, to reading images in an absolute path, should replace '/' to '\\' in the path
         # Notice that there should not contain any chinese character in the path
         openfile_name = openfile_name.replace('/','\\')
+        self.OpenAndShow(openfile_name)
 
+    def OpenAndShow(self,file):
+
+        openfile_name = file
         self.saveFileName = os.path.basename(openfile_name)
-        self.saveFileName,extension = os.path.splitext(self.saveFileName)
+        self.saveFileName, extension = os.path.splitext(self.saveFileName)
         self.saveFileName = self.saveFileName + '.txt'
 
-        self.input_image = cv2.imread(openfile_name)  #openfile_name  '0001.jpg'
-        self.input_image_backup = cv2.imread(openfile_name)  #openfile_name
+        self.input_image = cv2.imread(openfile_name)  # openfile_name  '0001.jpg'
+        self.input_image_backup = cv2.imread(openfile_name)  # openfile_name
 
-        self.imgOriginalHeight,self.imgOriginalWidth,_ = self.input_image.shape
+        self.imgOriginalHeight, self.imgOriginalWidth, _ = self.input_image.shape
 
         new_width = self.ui.ImageLabel.width()
         new_height = self.ui.ImageLabel.height()
-        self.input_image = cv2.resize(self.input_image,(new_width, new_height),interpolation=cv2.INTER_LINEAR)
-        self.input_image_backup = cv2.resize(self.input_image_backup, (new_width, new_height), interpolation=cv2.INTER_LINEAR)
+        self.input_image = cv2.resize(self.input_image, (new_width, new_height), interpolation=cv2.INTER_LINEAR)
+        self.input_image_backup = cv2.resize(self.input_image_backup, (new_width, new_height),
+                                             interpolation=cv2.INTER_LINEAR)
         height, width, bytesPerComponent = self.input_image.shape
         bytesPerLine = 3 * width
         cv2.cvtColor(self.input_image, cv2.COLOR_BGR2RGB, self.input_image)
         cv2.cvtColor(self.input_image_backup, cv2.COLOR_BGR2RGB, self.input_image_backup)
-        #self.input_image_backup = self.input_image.copy()
 
         QImg = QImage(self.input_image.data, width, height, bytesPerLine, QImage.Format_RGB888)
         pixmap = QPixmap.fromImage(QImg)
@@ -151,7 +161,36 @@ class LabelBezierCurve(QMainWindow):
         self.ui.ImageLabel.setCursor(Qt.CrossCursor)
 
         self.ui.OpenFile.setEnabled(True)
-        self.pControl.clear()
+        #self.pControl.clear()
+
+
+    def OpenFolder(self):
+        Folder = QFileDialog.getExistingDirectory(self,'Choose Folder',os.getcwd())
+        Folder = Folder.replace('/', '\\')
+        self.allFiles = []
+        self.allFilesIndex = 0
+        if os.path.isdir(Folder):
+            filelist = os.listdir(Folder)
+            for f in filelist:
+                f = Folder + '\\' + f
+                self.allFiles.append(f)
+            if len(self.allFiles) > 0:
+                self.OpenAndShow(self.allFiles[self.allFilesIndex])
+
+    def LabelNext(self):
+        if self.allFilesIndex < len(self.allFiles)-1:
+            self.allFilesIndex = self.allFilesIndex + 1
+            self.OpenAndShow(self.allFiles[self.allFilesIndex])
+        if self.allFilesIndex > 0:
+            img_draw = self.DrawBezierCurve(self.pControl, self.input_image)
+            self.showImage(img_draw)
+    def LabelPrevious(self):
+        if self.allFilesIndex > 0:
+            self.allFilesIndex = self.allFilesIndex - 1
+            self.OpenAndShow(self.allFiles[self.allFilesIndex])
+        #if self.allFilesIndex > 0:
+        img_draw = self.DrawBezierCurve(self.pControl, self.input_image)
+        self.showImage(img_draw)
 
     def Label(self):
         self.Label_Start = True
