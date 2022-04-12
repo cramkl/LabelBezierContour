@@ -7,7 +7,6 @@ from PyQt5.QtGui import QImage, QPixmap, QPainter, QPen, QGuiApplication
 import LabelBezier
 import cv2
 import math
-import numpy as np
 
 
 class LabelBezierCurve(QMainWindow):
@@ -26,6 +25,8 @@ class LabelBezierCurve(QMainWindow):
         self.nearPointIndex = -1
         self.pControl = []
         self.saveFileName = None
+        self.imgOriginalWidth = 0
+        self.imgOriginalHeight = 0
 
         #self.ui.OpenFile.setEnabled(True)
         self.ui.OpenFile.clicked.connect(self.openfile)
@@ -132,6 +133,8 @@ class LabelBezierCurve(QMainWindow):
         self.input_image = cv2.imread(openfile_name)  #openfile_name  '0001.jpg'
         self.input_image_backup = cv2.imread(openfile_name)  #openfile_name
 
+        self.imgOriginalHeight,self.imgOriginalWidth,_ = self.input_image.shape
+
         new_width = self.ui.ImageLabel.width()
         new_height = self.ui.ImageLabel.height()
         self.input_image = cv2.resize(self.input_image,(new_width, new_height),interpolation=cv2.INTER_LINEAR)
@@ -173,7 +176,10 @@ class LabelBezierCurve(QMainWindow):
     def LabelSave(self):
         file = open('./data/{0}'.format(self.saveFileName),'w')
         for i in range(len(self.pControl)):
-            file.write('{0},{1}'.format(self.pControl[i].x,self.pControl[i].y))
+            height, width, bytesPerComponent = self.input_image.shape
+            y = float(self.imgOriginalHeight)/height*self.pControl[i].y
+            x = float(self.imgOriginalWidth)/width*self.pControl[i].x
+            file.write('{0},{1}'.format(int(x),int(y)))
             file.write('\n')
         file.close()
         QMessageBox.information(self, "Info", "Data Saved!", QMessageBox.Yes, QMessageBox.Yes)
@@ -184,7 +190,7 @@ class LabelBezierCurve(QMainWindow):
             pt_x = self.pControl[i].x - mouse_pt.x  # + top
             pt_y = self.pControl[i].y - mouse_pt.y # + left
             dist = math.sqrt(pt_x*pt_x+pt_y*pt_y)
-            if dist < 50:
+            if dist < 10:
                 return i
         return -1
 
