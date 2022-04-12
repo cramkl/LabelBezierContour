@@ -1,3 +1,4 @@
+import os.path
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.QtWidgets import *
@@ -6,8 +7,7 @@ from PyQt5.QtGui import QImage, QPixmap, QPainter, QPen, QGuiApplication
 import LabelBezier
 import cv2
 import math
-
-
+import numpy as np
 
 
 class LabelBezierCurve(QMainWindow):
@@ -17,6 +17,7 @@ class LabelBezierCurve(QMainWindow):
         self.ui = LabelBezier.Ui_MainWindow()
         self.ui.setupUi(self)
         # 初始化
+
         self.init_ui()
         self.input_image = None
         self.input_image_backup = None
@@ -24,9 +25,19 @@ class LabelBezierCurve(QMainWindow):
         self.isMoving = False
         self.nearPointIndex = -1
         self.pControl = []
+        self.saveFileName = None
 
+        #self.ui.OpenFile.setEnabled(True)
         self.ui.OpenFile.clicked.connect(self.openfile)
         self.ui.LabelButton.clicked.connect(self.Label)
+        self.ui.LabelDone.clicked.connect(self.LabelDone)
+        self.ui.LabelReset.clicked.connect(self.LabelReset)
+        self.ui.LabelSave.clicked.connect(self.LabelSave)
+
+        self.ui.LabelDone.setEnabled(False)
+        self.ui.LabelReset.setEnabled(False)
+
+        #self.ui.ControlPointList.addItem('pt1:({0},{1})'.format(100,200))
 
     # ui初始化
     def init_ui(self):
@@ -57,40 +68,6 @@ class LabelBezierCurve(QMainWindow):
         Curvature = math.fabs(FirstDerivat_x * SecondDerivat_y - SecondDerivat_x * FirstDerivat_y) / math.pow(
             math.sqrt(math.fabs(FirstDerivat_x * FirstDerivat_x + FirstDerivat_y * FirstDerivat_y)), 3)
         return Curvature
-    '''
-    def pointAdd(self,p,q):
-        temp_p = self.make_ControlPoint()
-        temp_q = self.make_ControlPoint()
-        temp_p.x = p.x
-        temp_p.y = p.y
-        temp_q.x = q.x
-        temp_q.y = q.y
-        temp_p.x = temp_p.x + temp_q.x
-        temp_p.y = temp_p.y + temp_q.y
-        temp_p.z = temp_p.z + temp_q.z
-        return temp_p
-
-    def pointTimes(self,c,p):
-        temp_p = self.make_ControlPoint()
-        temp_p.x = p.x
-        temp_p.y = p.y
-        temp_p.x = c*temp_p.x
-        temp_p.y = c*temp_p.y
-        temp_p.z = c*temp_p.z
-        return temp_p
-
-    def Bernstein(self,u,p,m):
-
-        a = self.pointTimes(math.pow(u, 3), p[m+0])
-        b = self.pointTimes(3 * math.pow(u, 2) * (1 - u), p[m+1])
-        c = self.pointTimes(3 * u * math.pow((1 - u), 2), p[m+2])
-        d = self.pointTimes(math.pow((1 - u), 3), p[m+3])
-
-        e = self.pointAdd(a, b)
-        f = self.pointAdd(c, d)
-        r = self.pointAdd(e, f)
-        return r
-    '''
 
     def BSplineBase(self,x,t):
         if x == 0:
@@ -118,7 +95,6 @@ class LabelBezierCurve(QMainWindow):
 
     def DrawBezierCurve(self,control_pt,img):
 
-        #self.input_image = self.input_image_backup
         img_temp = img.copy()
         if len(control_pt)< 4 :
             return 0
@@ -148,8 +124,13 @@ class LabelBezierCurve(QMainWindow):
         # In cv2.imread, to reading images in an absolute path, should replace '/' to '\\' in the path
         # Notice that there should not contain any chinese character in the path
         openfile_name = openfile_name.replace('/','\\')
-        self.input_image = cv2.imread('0001.jpg')  #openfile_name
-        self.input_image_backup = cv2.imread('0001.jpg')  #openfile_name
+
+        self.saveFileName = os.path.basename(openfile_name)
+        self.saveFileName,extension = os.path.splitext(self.saveFileName)
+        self.saveFileName = self.saveFileName + '.txt'
+
+        self.input_image = cv2.imread(openfile_name)  #openfile_name  '0001.jpg'
+        self.input_image_backup = cv2.imread(openfile_name)  #openfile_name
 
         new_width = self.ui.ImageLabel.width()
         new_height = self.ui.ImageLabel.height()
@@ -166,8 +147,36 @@ class LabelBezierCurve(QMainWindow):
         self.ui.ImageLabel.setPixmap(pixmap)
         self.ui.ImageLabel.setCursor(Qt.CrossCursor)
 
+        self.ui.OpenFile.setEnabled(True)
+        self.pControl.clear()
+
     def Label(self):
         self.Label_Start = True
+        self.ui.LabelButton.setEnabled(False)
+        self.ui.LabelDone.setEnabled(True)
+        self.ui.LabelReset.setEnabled(True)
+
+    def LabelDone(self):
+        self.Label_Start = False
+        self.ui.LabelButton.setEnabled(True)
+        self.ui.LabelDone.setEnabled(False)
+        self.ui.LabelReset.setEnabled(True)
+
+    def LabelReset(self):
+        self.pControl.clear()
+        self.input_image_backup= self.input_image.copy()
+        self.showImage(self.input_image)
+        self.ui.LabelButton.setEnabled(True)
+        self.ui.LabelDone.setEnabled(False)
+        self.ui.LabelReset.setEnabled(False)
+
+    def LabelSave(self):
+        file = open('./data/{0}'.format(self.saveFileName),'w')
+        for i in range(len(self.pControl)):
+            file.write('{0},{1}'.format(self.pControl[i].x,self.pControl[i].y))
+            file.write('\n')
+        file.close()
+        QMessageBox.information(self, "Info", "Data Saved!", QMessageBox.Yes, QMessageBox.Yes)
 
     def getNearPointIndex(self,mouse_pt):
 
@@ -206,15 +215,13 @@ class LabelBezierCurve(QMainWindow):
                         self.pControl.append(pt)
                     else:
                         self.pControl.append(pt)
-
-                    #cv2.circle(self.input_image, (pt.x, pt.y), 8, (255, 0, 0), 2)
                     if len(self.pControl) >=5:
                         img_draw = self.DrawBezierCurve(self.pControl,self.input_image)
                         self.showImage(img_draw)
                     else:
-                        #img_temp = self.input_image.copy()
                         cv2.circle(self.input_image_backup, (pt.x, pt.y), 8, (255, 0, 0), 2)
                         self.showImage(self.input_image_backup)
+                    self.updateList()
 
 
     def mouseMoveEvent(self, event):
@@ -225,8 +232,14 @@ class LabelBezierCurve(QMainWindow):
                 left = self.ui.ImageLabel.y()
                 self.pControl[self.nearPointIndex].x = pt1.x()-top
                 self.pControl[self.nearPointIndex].y = pt1.y()-left
+                self.updateList()
                 img_draw = self.DrawBezierCurve(self.pControl, self.input_image)
                 self.showImage(img_draw)
+
+    def updateList(self):
+        self.ui.ControlPointList.clear()
+        for i in range(len(self.pControl)):
+            self.ui.ControlPointList.addItem('pt{0} : ({1},{2})'.format(i, self.pControl[i].x, self.pControl[i].y))
 
 
     def mouseReleaseEvent(self, event):
@@ -242,8 +255,6 @@ class LabelBezierCurve(QMainWindow):
         QImg = QImage(img.data, width, height, bytesPerLine, QImage.Format_RGB888)
         pixmap = QPixmap.fromImage(QImg)
         self.ui.ImageLabel.setPixmap(pixmap)
-
-
 
 
 # 程序入口
