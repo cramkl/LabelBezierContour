@@ -6,6 +6,6 @@ This project is used to label the contour using Bezier curve (BSpline) by settin
 This project is aimed to become a common tool for visual contour tracking.
 
 #### 2.Requirements
-pyQT5
-opencv
+* pyQT5
+* opencv
   
