@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>989</width>
-    <height>582</height>
+    <width>1080</width>
+    <height>628</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,9 +19,15 @@
      <rect>
       <x>690</x>
       <y>30</y>
-      <width>112</width>
-      <height>34</height>
+      <width>160</width>
+      <height>50</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>12</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>Open File</string>
@@ -49,11 +55,17 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>700</x>
-      <y>170</y>
-      <width>91</width>
-      <height>41</height>
+      <x>750</x>
+      <y>200</y>
+      <width>100</width>
+      <height>50</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>12</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>Start</string>
@@ -65,11 +77,17 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>670</x>
-      <y>130</y>
-      <width>281</width>
-      <height>151</height>
+      <x>690</x>
+      <y>160</y>
+      <width>341</width>
+      <height>181</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>12</pointsize>
+     </font>
     </property>
     <property name="title">
      <string>Label Action</string>
@@ -81,11 +99,17 @@
    <widget class="QPushButton" name="OpenFolder">
     <property name="geometry">
      <rect>
-      <x>820</x>
+      <x>870</x>
       <y>30</y>
-      <width>112</width>
-      <height>34</height>
+      <width>160</width>
+      <height>50</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>12</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>Open Folder</string>
@@ -94,11 +118,17 @@
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>
-      <x>670</x>
-      <y>290</y>
-      <width>281</width>
-      <height>221</height>
+      <x>690</x>
+      <y>350</y>
+      <width>341</width>
+      <height>211</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>12</pointsize>
+     </font>
     </property>
     <property name="title">
      <string>Control Points</string>
@@ -111,7 +141,7 @@
       <rect>
        <x>10</x>
        <y>30</y>
-       <width>261</width>
+       <width>321</width>
        <height>161</height>
       </rect>
      </property>
@@ -120,11 +150,17 @@
    <widget class="QPushButton" name="LabelDone">
     <property name="geometry">
      <rect>
-      <x>830</x>
-      <y>170</y>
-      <width>91</width>
-      <height>41</height>
+      <x>870</x>
+      <y>200</y>
+      <width>100</width>
+      <height>50</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>12</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>Done</string>
@@ -133,11 +169,17 @@
    <widget class="QPushButton" name="LabelReset">
     <property name="geometry">
      <rect>
-      <x>700</x>
-      <y>220</y>
-      <width>91</width>
-      <height>41</height>
+      <x>750</x>
+      <y>260</y>
+      <width>100</width>
+      <height>50</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>12</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>Reset</string>
@@ -146,11 +188,17 @@
    <widget class="QPushButton" name="LabelSave">
     <property name="geometry">
      <rect>
-      <x>830</x>
-      <y>220</y>
-      <width>91</width>
-      <height>41</height>
+      <x>870</x>
+      <y>260</y>
+      <width>100</width>
+      <height>50</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>12</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>Save</string>
@@ -159,11 +207,17 @@
    <widget class="QPushButton" name="OpenNext">
     <property name="geometry">
      <rect>
-      <x>690</x>
-      <y>80</y>
-      <width>112</width>
-      <height>34</height>
+      <x>870</x>
+      <y>100</y>
+      <width>160</width>
+      <height>50</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>12</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>Next</string>
@@ -172,14 +226,64 @@
    <widget class="QPushButton" name="LabelPrevious">
     <property name="geometry">
      <rect>
-      <x>820</x>
-      <y>80</y>
-      <width>112</width>
-      <height>34</height>
+      <x>690</x>
+      <y>100</y>
+      <width>160</width>
+      <height>50</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>12</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>Previous</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>530</y>
+      <width>131</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>File Name :</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelFileName">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>530</y>
+      <width>131</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>None</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
     </property>
    </widget>
    <zorder>groupBox_2</zorder>
@@ -193,13 +297,15 @@
    <zorder>LabelSave</zorder>
    <zorder>OpenNext</zorder>
    <zorder>LabelPrevious</zorder>
+   <zorder>label</zorder>
+   <zorder>labelFileName</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>989</width>
+     <width>1080</width>
      <height>30</height>
     </rect>
    </property>

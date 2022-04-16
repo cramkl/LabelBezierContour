@@ -43,7 +43,7 @@ class LabelBezierCurve(QMainWindow):
         self.ui.LabelDone.setEnabled(False)
         self.ui.LabelReset.setEnabled(False)
 
-        #self.ui.ControlPointList.addItem('pt1:({0},{1})'.format(100,200))
+        #self.ui.FileNameDisplay.setAlignment(Qt.AlignCenter)
 
     # ui初始化
     def init_ui(self):
@@ -126,7 +126,7 @@ class LabelBezierCurve(QMainWindow):
 
     def openfile(self):
         openfile_name,imgType = QFileDialog.getOpenFileName(self, 'Select File', '', 'Image Files(*.bmp , *.jpg)')
-        if openfile_name == None:
+        if openfile_name == '':
             return 0
         # In cv2.imread, to reading images in an absolute path, should replace '/' to '\\' in the path
         # Notice that there should not contain any chinese character in the path
@@ -136,8 +136,10 @@ class LabelBezierCurve(QMainWindow):
     def OpenAndShow(self,file):
 
         openfile_name = file
+
         self.saveFileName = os.path.basename(openfile_name)
         self.saveFileName, extension = os.path.splitext(self.saveFileName)
+        filenameDisplay = self.saveFileName + extension
         self.saveFileName = self.saveFileName + '.txt'
 
         self.input_image = cv2.imread(openfile_name)  # openfile_name  '0001.jpg'
@@ -161,6 +163,8 @@ class LabelBezierCurve(QMainWindow):
         self.ui.ImageLabel.setCursor(Qt.CrossCursor)
 
         self.ui.OpenFile.setEnabled(True)
+
+        self.ui.labelFileName.setText(filenameDisplay)
         #self.pControl.clear()
 
 
@@ -183,14 +187,16 @@ class LabelBezierCurve(QMainWindow):
             self.OpenAndShow(self.allFiles[self.allFilesIndex])
         if self.allFilesIndex > 0:
             img_draw = self.DrawBezierCurve(self.pControl, self.input_image)
-            self.showImage(img_draw)
+            if len(self.pControl) > 4:
+                self.showImage(img_draw)
     def LabelPrevious(self):
         if self.allFilesIndex > 0:
             self.allFilesIndex = self.allFilesIndex - 1
             self.OpenAndShow(self.allFiles[self.allFilesIndex])
         #if self.allFilesIndex > 0:
         img_draw = self.DrawBezierCurve(self.pControl, self.input_image)
-        self.showImage(img_draw)
+        if len(self.pControl) > 4:
+            self.showImage(img_draw)
 
     def Label(self):
         self.Label_Start = True
